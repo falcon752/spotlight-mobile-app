@@ -1,29 +1,22 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import InitialLayout from "@/components//InitialLayout";
+import ClerkAndConvexProvider from "@/providers/ClerkAndConvexProvider";
 
-import { useColorScheme } from '@/hooks/useColorScheme';
+
+const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY;
+
+if (!publishableKey) {
+  throw new Error("EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY is not set in your .env file");
+}
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
-
-  if (!loaded) {
-    // Async font loading only occurs in development.
-    return null;
-  }
-
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <ClerkAndConvexProvider>
+      <SafeAreaProvider>
+        <SafeAreaView style={{ flex: 1, backgroundColor: "#000" }}>
+          <InitialLayout />
+        </SafeAreaView>
+      </SafeAreaProvider>
+    </ClerkAndConvexProvider>
   );
 }
